@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Session genome="/Users/ptdolan/Research Projects/SARS-COV2/Nanopore_Sequencing/MT276325.1.fa" hasGeneTrack="false" hasSequenceTrack="true" locus="MT276325.1:29583-29742" version="8">
+    <Resources>
+        <Resource path="minimapOutput_MT276325_sort.bam"/>
+    </Resources>
+    <Panel height="331424" name="Panel1597081744982" width="1133">
+        <Track attributeKey="minimapOutput_MT276325_sort.bam Coverage" autoScale="true" clazz="org.broad.igv.sam.CoverageTrack" color="175,175,175" colorScale="ContinuousColorScale;0.0;355484.0;255,255,255;175,175,175" fontSize="10" id="/Users/ptdolan/Research Projects/SARS-COV2/Nanopore_Sequencing/minimapOutput_MT276325_sort.bam_coverage" name="minimapOutput_MT276325_sort.bam Coverage" snpThreshold="0.2" visible="true">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="355484.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="minimapOutput_MT276325_sort.bam Junctions" clazz="org.broad.igv.sam.SpliceJunctionTrack" fontSize="10" height="60" id="/Users/ptdolan/Research Projects/SARS-COV2/Nanopore_Sequencing/minimapOutput_MT276325_sort.bam_junctions" name="minimapOutput_MT276325_sort.bam Junctions" visible="false"/>
+        <Track attributeKey="minimapOutput_MT276325_sort.bam" clazz="org.broad.igv.sam.AlignmentTrack" displayMode="EXPANDED" experimentType="THIRD_GEN" fontSize="10" id="/Users/ptdolan/Research Projects/SARS-COV2/Nanopore_Sequencing/minimapOutput_MT276325_sort.bam" name="minimapOutput_MT276325_sort.bam" visible="true">
+            <RenderOptions/>
+        </Track>
+    </Panel>
+    <Panel height="93" name="FeaturePanel" width="1133">
+        <Track attributeKey="Reference sequence" clazz="org.broad.igv.track.SequenceTrack" fontSize="10" id="Reference sequence" name="Reference sequence" visible="true"/>
+    </Panel>
+    <PanelLayout dividerFractions="0.01020408163265306,0.8333333333333334"/>
+    <HiddenAttributes>
+        <Attribute name="DATA FILE"/>
+        <Attribute name="DATA TYPE"/>
+        <Attribute name="NAME"/>
+    </HiddenAttributes>
+</Session>
