@@ -35,18 +35,18 @@ You will need to gain access to locus by going to:
 > rsync -avp ~/path/to/local/directory username@ai-submit1.niaid.nih.gov:~/path/to/destination/
 ```
 
-## 4. Submit Jobs in _locus_ with `qsubmit`:
+## 4. Submit Jobs in _locus_ with `qsubmit`
 ___[under construction]___
 ```
 qsubmit jobfile [arguments]
 ```
 
-## 5. Working with modules
-- To list the currently loaded modules
+## 5. Working with ___modules___
+### - To list the currently loaded modules:
 ``` bash
 > module list
 ```
-- To load a module. 
+### - To list available modules:
 ``` bash
 > module avail
 ```
@@ -66,12 +66,13 @@ acml/gcc/mp/64/5.3.1                   intel-cluster-runtime/mic/2017.0
 
 ```
 and so on. 
-- To load a module. 
+
+### - To load a module, enter:
 ``` bash
 > module load <modulename>
 ```
-for example, 
+for example, to load minimap2:
 ``` bash
-> module load 
+> module load minimap2
 ```
 
