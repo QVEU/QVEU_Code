@@ -34,5 +34,44 @@ You will need to gain access to locus by going to:
 ``` bash
 > rsync -avp ~/path/to/local/directory username@ai-submit1.niaid.nih.gov:~/path/to/destination/
 ```
+
 ## 4. Submit Jobs in _locus_ with `qsubmit`:
-TBD.
+___[under construction]___
+```
+qsubmit jobfile [arguments]
+```
+
+## 5. Working with modules
+- To list the currently loaded modules
+``` bash
+> module list
+```
+- To load a module. 
+``` bash
+> module avail
+```
+which returns: 
+```
+----------------------------- /cm/local/modulefiles ------------------------------
+cmd             gcc/6.3.0       module-git      openldap
+dot             ipmitool/1.8.18 module-info     shared
+freeipmi/1.5.5  lua/5.3.4       null
+
+----------------------------- /cm/shared/modulefiles -----------------------------
+acml/gcc/64/5.3.1                      intel-cluster-runtime/ia32/2017.0
+acml/gcc/fma4/5.3.1                    intel-cluster-runtime/intel64/2017.0
+acml/gcc/mp/64/5.3.1                   intel-cluster-runtime/mic/2017.0
+
+...
+
+```
+and so on. 
+- To load a module. 
+``` bash
+> module load <modulename>
+```
+for example, 
+``` bash
+> module load 
+```
+
