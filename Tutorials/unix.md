@@ -2,7 +2,9 @@
 ### Adapted from http://www.mathcs.emory.edu/~valerie/courses/fall10/155/resources/unix_cheatsheet.html (Valerie Summet, Emory)
 ## Help on any Unix command.
 `man {command}` Retrieve manual entry for command. For example, type `man rm` to read the manual for the `rm` command.
+
 `whatis {command}` Give short description of command.
+
 ## _List_ functions
 `ls {path}`	It's ok to combine attributes, eg ls -laF gets a long listing of all files with types.
 
@@ -17,26 +19,35 @@
 `ls -R {path}`	Recursive listing, with all subdirs.
 
 `ls {path}` | more	Show listing one screen at a time.
+
 ## Change to directory
 `cd {dirname}`:	__Note:__ There must be a space between.
 
 `cd` or `cd ~`:	Go back to home directory, useful if you're lost.
 
 `cd ..`	Go back up one level in the directory structure, to the parent directory.
+
 ## Make a new directory
 `mkdir {dirname}`	
+
 ## Remove a directory
 `rmdir {dirname}`	Only works if {dirname} is empty.
 
-`rm -r {dirname}`	Remove all files and subdirs. Careful!
+`rm -r {dirname}`	Remove all files and subdirs. __Careful!__
+
 ## Print working directory
 `pwd`	Show where you are as full path. Useful if you're lost or exploring.
+
 ## Copy a file or directory
 `cp {file1} {file2}`
+
 `cp -r {dir1} {dir2}`	Recursive, copy directory and all subdirs.
+
 `cat {newfile} >> {oldfile}`	Append newfile to end of oldfile.
+
 ## Move (or rename) a file
 `mv {oldfile} {newfile}`	Moving a file and renaming it are the same thing.
+
 `mv {oldname} {newname}`	
 ## Delete a file
 `rm {filespec}`	You can use `?` and `*` wildcards to remove files with common names. `?` is any character; `*` is any string of characters.
@@ -60,11 +71,14 @@
 
 ## Create a text file.
 `cat > {filename}`	Enter your text (multiple lines with enter are ok) and press control-d to save.
+
 `gedit {filename}`	Create some text and save it.
+
 `touch {filename}`  Create a file in memory
 
 ## Compare two files
 `diff {file1} {file2}` Show the differences.
+
 `sdiff {file1} {file2}`	Show files side by side.
 
 ## Other text commands
