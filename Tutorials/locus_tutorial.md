@@ -25,15 +25,21 @@ You will need to gain access to locus by going to:
 - this is a good way to develop scripts that you can eventually turn into `qsubmit` job files.
 
 ## 3. Transferring files to the cluster with `rsync`
-- To transfer a ___file___:
+### - To transfer a ___file___:
 ``` bash
 > rsync -avp ~/path/to/local/file username@ai-submit1.niaid.nih.gov:~/path/to/destination/
 ```
 
-- To transfer a ___directory___. __Note__: Do not include terminal `/` or you will transfer the _contents_ of the directory into the destination directory.
+### - To transfer a ___directory___. __Note__: Do not include terminal `/` or you will transfer the _contents_ of the directory into the destination directory.
 ``` bash
 > rsync -avp ~/path/to/local/directory username@ai-submit1.niaid.nih.gov:~/path/to/destination/
 ```
+
+### - To __download__ data from the cluster back to your machine, just reverse the addresses. 
+``` bash
+> rsync -avp username@ai-submit1.niaid.nih.gov:~/path/to/data ~/path/to/local/directory/
+```
+
 
 ## 4. Submit Jobs in _locus_ with `qsubmit`
 ___[under construction]___
