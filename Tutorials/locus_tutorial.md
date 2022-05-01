@@ -16,11 +16,12 @@ You will need to gain access to locus by going to:
 ``` bash
 > ssh username@locus
 ```
-## 2. Work interactively in _locus_ with `sinteractive`
-- `sinteractive` opens an interactive session where you can work on the command line to develop and run analyses.
+## 2. Work interactively in _locus_ with `qrsh`
+- `qrsh` opens an interactive session where you can work on the command line to develop and run analyses.
 ``` bash
-> sinteractive --mem=8g --cpus-per-task=4 --gres=lscratch:30
+> qrsh -l h_vmem=16G
 ```
+change the memory requirements, `h_vmem`, as needed. 
 
 - this is a good way to develop scripts that you can eventually turn into `qsubmit` job files.
 
