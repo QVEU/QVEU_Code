@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #Run-specific Parameters...
-out=minimapOutput_MT276325
+out=minimapOutput_NanoporeRun_00001
 target=MT276325.1.fa
 readsDir=/Library/MinKNOW/data/SARS2/A549_SCoV2_totRNA/20200731_2123_MN34223_FAO33670_43d615e8/fastq_pass
 
