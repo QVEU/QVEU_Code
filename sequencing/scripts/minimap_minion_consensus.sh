@@ -26,11 +26,11 @@ cat ${2}/*.sam > ${2}/merge.sam
 #make bam files
 echo "Making bam output..."
 
-samtools view -S -b ${2}/${2}_out.sam > ${2}/${2}_out.bam
+samtools view -S -b ${2}/merge.sam > ${2}/merge.bam
 
 #sort and pile up reads. make bed cov file with bed files from template.
 
-samtools sort ${2}/${2}_out.bam > ${2}/${2}_sort.bam
-samtools mpileup ${2}/${2}_sort.bam > ${2}/${2}_pile.pile
+samtools sort ${2}/merge.bam > ${2}/merge_sort.bam
+samtools mpileup ${2}/merge_sort.bam > ${2}/merge_sort_pile.pile
 #samtools bedcov -Q 8 MT276325.1.bed ${2}.sam
 echo "Done. "
