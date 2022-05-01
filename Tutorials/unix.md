@@ -1,4 +1,5 @@
 # Unix Cheat Sheet
+### Adapted from http://www.mathcs.emory.edu/~valerie/courses/fall10/155/resources/unix_cheatsheet.html (Valerie Summet, Emory)
 ## Help on any Unix command.
 `man {command}` Retrieve manual entry for command. For example, type `man rm` to read the manual for the `rm` command.
 `whatis {command}` Give short description of command.
