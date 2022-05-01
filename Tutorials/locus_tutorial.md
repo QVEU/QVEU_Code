@@ -7,7 +7,7 @@ _Quantitative Virology and Evolution Unit_
 
 You will need to gain access to locus by going to:
 
-#1. Log in to _locus_.
+# 1. Log in to _locus_.
 - While on campus network or VPN, enter:
 ``` bash
 ssh username@ai-submit1.niaid.nih.gov
@@ -16,14 +16,14 @@ ssh username@ai-submit1.niaid.nih.gov
 ``` bash
 ssh username@locus
 ```
-#2. Work interactively in _locus_ with `sinteractive`
+# 2. Work interactively in _locus_ with `sinteractive`
 ```
 sinteractive --mem=8g --cpus-per-task=4 --gres=lscratch:30
 ```
 - this will open an interactive session where you can work in the CLI and run analyses.
 - this is a good way to develop scripts that you can eventually turn into `qsubmit` job files.
 
-#3. Transferring files to the cluster with `rsync`
+# 3. Transferring files to the cluster with `rsync`
 - To transfer a file:
 ```
 rsync -avp ~/path/to/local/file username@ai-submit1.niaid.nih.gov:~/path/to/destination/
@@ -32,4 +32,5 @@ rsync -avp ~/path/to/local/file username@ai-submit1.niaid.nih.gov:~/path/to/dest
 ```
 rsync -avp ~/path/to/local/directory username@ai-submit1.niaid.nih.gov:~/path/to/destination/
 ```
-#4. Submit Jobs in _locus_ with `qsubmit`:
+# 4. Submit Jobs in _locus_ with `qsubmit`:
+TBD.
