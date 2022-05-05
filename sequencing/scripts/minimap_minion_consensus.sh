@@ -12,13 +12,13 @@ echo "Mapping reads..."
 for i in ${2}/*.fastq.gz
 do
   echo $i
-  /Users/dolanpt/opt/anaconda3/pkgs/minimap2-2.24-h1f540d2_1/bin/minimap2 -ax map-ont $1 $i > ${i/\.fastq.gz/}.sam      # for Oxford Nanopore reads
+  minimap2 -ax map-ont $1 $i > ${i/\.fastq.gz/}.sam      # for Oxford Nanopore reads
 done
 
 #Post process pile of sams.
 echo "Merging and removing sams..."
-cat ${2}/*.sam > ${2}/merge.sam
-#samtools merge -f ${2}_out.sam ${2}/FAT*.sam
+#cat ${2}/*.sam > ${2}/merge.sam
+samtools merge -f ${2}/merge.sam ${2}/FAT*.sam
 #rm ${2}/FAT*.sam
 
 #picard MergeSamFiles -I  FAT*.sam -O  merged_files.bam
