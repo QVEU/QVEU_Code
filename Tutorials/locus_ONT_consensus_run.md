@@ -9,12 +9,12 @@ The read directories on the nanopore computer look like:
 Move these files to the _locus.niaid.nih_ cluster [see tutorial here.](https://github.com/QVEU/QVEU_Code/blob/main/Tutorials/locus_tutorial.md#3-transferring-files-to-the-cluster-with-rsync)
 
 Navigate from the top directory to the 'fastq_pass' directory on the computer you will run your mapping script:
-''' bash
+``` bash
 cd <my_lib_name>/<my_sample_name>/<run_id>/fastq_pass/
-'''
+```
 
 
-''' bash
+``` bash
 cd <my_lib_name>/<my_sample_name>/<run_id>/fastq_pass/
-'''
+```
 
