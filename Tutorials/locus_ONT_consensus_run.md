@@ -1,6 +1,6 @@
 # Generating consensus sequences from ONT runs. 
 ## Author: Patrick T. Dolan, Ph.D.
-## Date: [date]
+## Date: 5/6/22
 
 The read directories on the nanopore computer look like: 
 
