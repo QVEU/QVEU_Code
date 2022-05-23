@@ -3,7 +3,7 @@
 
 ### Install SnakeMake
 ``` bash
-conda install -c conda-forge snakemake
+ conda install -n base -c conda-forge mamba:
 ```
 
 
