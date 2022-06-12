@@ -5,7 +5,8 @@ _Quantitative Virology and Evolution Unit_
 
 [under construction]
 
-You will need to gain access to locus by going to:
+You will need to gain access to locus by going to: https://locus.niaid.nih.gov/userportal/
+
 
 ## 1. Log in to _locus_.
 - While on campus network or VPN, enter:
