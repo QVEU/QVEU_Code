@@ -8,112 +8,177 @@ This Markdown cheat sheet provides a quick overview of all the Markdown syntax e
 
 These are the elements outlined in John Gruber’s original design document. All Markdown applications support these elements.
 
-### Heading
+## Heading
 
+\# H1
 # H1
+
+\## H2
 ## H2
+\### H3
 ### H3
 
-### Bold
+## Bold
 
+```
+**bold text**
+```
 **bold text**
 
-### Italic
+## Italic
 
+```
+*italicized text*
+```
 *italicized text*
 
-### Blockquote
-
+## Blockquote
+```
+> blockquote
+```
 > blockquote
 
-### Ordered List
+## Ordered List
+```
+1. First item 
+2. Second item 
+3. Third item 
+```
 
 1. First item
 2. Second item
 3. Third item
 
-### Unordered List
+## Unordered List
 
+```
+- First item
+- Second item 
+- Third item
+```
 - First item
 - Second item
 - Third item
+---
+## Code
 
-### Code
-
+```
+`code`
+```
 `code`
 
-### Horizontal Rule
+## Horizontal Rule
 
+```
+---
+```
 ---
 
 ### Link
+```
+[QVEU Website](http://qveu.bio)
+```
 
-[Markdown Guide](https://www.markdownguide.org)
+[QVEU Website](http://qveu.bio)
 
 ### Image
+```
+![alt t-rex text](https://upload.wikimedia.org/wikipedia/commons/b/b2/Tyrannosaurus_skeletal_diagram.jpg)
+```
 
-![alt text](https://www.markdownguide.org/assets/images/tux.png)
+![alt t-rex text](https://upload.wikimedia.org/wikipedia/commons/b/b2/Tyrannosaurus_skeletal_diagram.jpg)
 
-## Extended Syntax
+# Extended Syntax
 
 These elements extend the basic syntax by adding additional features. Not all Markdown applications support these elements.
 
-### Table
+## Table
+```
+| Syntax | Description |
+| ----------- | ----------- |
+| Header | Title |
+| Paragraph | Text |
+```
 
 | Syntax | Description |
 | ----------- | ----------- |
 | Header | Title |
 | Paragraph | Text |
 
-### Fenced Code Block
-
+## Fenced Code Block
 ```
+\```
 {
   "firstName": "John",
   "lastName": "Smith",
   "age": 25
 }
+\```
 ```
+## Footnote
 
-### Footnote
-
+```
+Here's a sentence with a footnote. [^1]
+```
 Here's a sentence with a footnote. [^1]
 
+```
+[^1]: This is the footnote. #(See below)
+```
 [^1]: This is the footnote.
 
-### Heading ID
+## Heading ID
 
-### My Great Heading {#custom-id}
+```
+## My Great Heading {#custom-id}
+```
+## My Great Heading {#custom-id}
 
-### Definition List
-
+## Definition List
+```
+term
+: definition
+```
 term
 : definition
 
 ### Strikethrough
 
+```
+~~The world is flat.~~
+```
 ~~The world is flat.~~
 
 ### Task List
-
-- [x] Write the press release
-- [ ] Update the website
-- [ ] Contact the media
-
+```
+- [x] Pass cells
+- [x] Sequence Virus
+- [ ] Save the World
+```
+- [x] Pass cells
+- [x] Sequence Virus
+- [ ] Save the World
 ### Emoji
 
+```That is so funny! :joy:```
 That is so funny! :joy:
 
 (See also [Copying and Pasting Emoji](https://www.markdownguide.org/extended-syntax/#copying-and-pasting-emoji))
 
 ### Highlight
-
+```
 I need to highlight these ==very important words==.
-
+```
+I need to highlight these ==very important words==.
 ### Subscript
 
+```
+H~2~O
+```
 H~2~O
 
 ### Superscript
-
+```
+X^2^
+```
 X^2^
