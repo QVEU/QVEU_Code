@@ -1,6 +1,6 @@
 library(ggplot2)
 ptbfrags<-read.csv("~/GitHub/QVEU_Code/Biochemistry/Kinetics/RW_BLI_2022_06_15_wt_del_rep_ptbfrags.csv")
-
+pdf("~/GitHub/QVEU_Code/Biochemistry/Kinetics/61522_PTB_fragment_binding_BLI.pdf",height=6,width = 6)
 ggplot(ptbfrags)+
   geom_boxplot(aes(paste(Experiment,Loading.Sample.ID, sep = " + "),as.numeric(KD..M.),fill=`Loading.Sample.ID`))+
   geom_point(aes(paste(Experiment,Loading.Sample.ID, sep = " + "),as.numeric(KD..M.)))+
@@ -27,3 +27,4 @@ ggplot(ptbfrags)+
   ylab(expression(K[dis]))+xlab(expression(K[a]))+  
   scale_y_log10()+scale_x_log10()+theme_bw()
 
+dev.off()
