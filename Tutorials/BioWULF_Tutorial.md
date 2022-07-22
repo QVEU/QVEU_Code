@@ -87,3 +87,9 @@ set -e
 module load R/4.2.0
 Rscript ~/CodonAlign_Decipher.R
 ```
+
+## Troubleshooting
+If the run fails, first check the slurm.out file. If no clear error is shown, go to the User Dashboard on the BioWULF website then Job Info and finally select the run ID. The most likely cause is running out of memory. On the cluster, the following command can also give more thorough info on the run:
+```{bash}
+jobhist *JobID*
+```
