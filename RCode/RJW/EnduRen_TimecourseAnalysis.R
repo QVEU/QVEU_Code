@@ -12,22 +12,23 @@ labels<-tibble(Col=c(1:12),
                Trx=c("water","none","none","none","none","guan","guan","guan","guan","none","none","water"))
 
 ET_merge<-merge(ET_long,labels,by = "Col")
+ET_merge$G=factor(paste(ET_merge$Sample, ET_merge$Trx))
+ET_merge = ET_merge%>%group_by(Time,G) %>%mutate(means=mean(value),sem=sd(value)/sqrt(length(value)),len=(length(value)))
 
-
-ET_stat<-ET_merge%>%
-  group_by(Sample) %>%
-  t_test(value ~ Time) %>%
-  adjust_pvalue(method = "BH") %>%
+ET_stat<-ET_merge%>%ungroup()%>%filter(G%in%c("WT none","del564-568 none"))%>%
+  group_by(Time) %>%
+  t_test(value ~ G) %>%
+  adjust_pvalue(method = "BY") %>%
   add_significance()
 ET_stat
 
+ET_stat_guan<-ET_merge%>%ungroup()%>%filter(G%in%c("WT guan","del564-568 guan"))%>%
+  group_by(Time) %>%
+  t_test(value ~ G) %>%
+  adjust_pvalue(method = "BY") %>%
+  add_significance()
+
+
 
   
-  stat.test <- mydata.long %>%
-  group_by(Sample) %>%
-  t_test(value ~ Species) %>%
-  adjust_pvalue(method = "BH") %>%
-  add_significance()
-stat.test
-  
-ET_merge%>%group_by()%>%summarise(avg=mean("WT"))
+ET_merge%>%group_by()%>%summarise(avg=mean(Sample))
