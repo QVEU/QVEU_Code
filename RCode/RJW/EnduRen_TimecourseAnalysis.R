@@ -15,14 +15,26 @@ ET_merge<-merge(ET_long,labels,by = "Col")
 ET_merge$G=factor(paste(ET_merge$Sample, ET_merge$Trx))
 ET_merge = ET_merge%>%group_by(Time,G) %>%mutate(means=mean(value),sem=sd(value)/sqrt(length(value)),len=(length(value)))
 
-ET_stat<-ET_merge%>%ungroup()%>%filter(G%in%c("WT none","del564-568 none"))%>%
+
+ET_stat_none<-ET_merge%>%ungroup()%>%filter(G%in%c("WT none","del564-568 none"))%>%
   group_by(Time) %>%
   t_test(value ~ G) %>%
   adjust_pvalue(method = "BY") %>%
   add_significance()
-ET_stat
 
 ET_stat_guan<-ET_merge%>%ungroup()%>%filter(G%in%c("WT guan","del564-568 guan"))%>%
+  group_by(Time) %>%
+  t_test(value ~ G) %>%
+  adjust_pvalue(method = "BY") %>%
+  add_significance()
+
+ET_stat_WT<-ET_merge%>%ungroup()%>%filter(G%in%c("WT none","WT guan"))%>%
+  group_by(Time) %>%
+  t_test(value ~ G) %>%
+  adjust_pvalue(method = "BY") %>%
+  add_significance()
+
+ET_stat_del<-ET_merge%>%ungroup()%>%filter(G%in%c("del564-568 none","del564-568 guan"))%>%
   group_by(Time) %>%
   t_test(value ~ G) %>%
   adjust_pvalue(method = "BY") %>%
