@@ -64,14 +64,17 @@ You can use qsub as well for a non supervised job.
 
 **1. Web_summary results** of each sample will give a couple of important parameters for you go foward (or not) with you analysis
 
-*Summary tab:
+*Summary tab:*
 
   1.1 - **Estimated Number of Cells** (this number will be around of the target cells you choose during cells preparation)
+  
   1.2 - **Mean Reads per Cell** (which should be above 20k per cell - at least), you should check the requeriments according to which chemestry you are using (3' or 5'). Sometimes sequecing more will provide better covarege per cell = more confidence of the transcriptome you are detecting. For 5' kit, if you are not using VDJ sequecing, just gene expression, there is a note for 50k per cell on the end of the 10X protocol. 
+  
   1.3 - **Median Genes per Cell** (you can detect between 2k to 7.5k genes in one cell)
+  
   1.4 - **Sequecing Saturation** - this value should be around 100%. If you are not it could be 2 things - you need to sequence more to be able to saturate the heterogeneity in your sample. However, if you are working with low complexity cells (such as monocultered cells) this could be challenging. One good parameter that can help to decide if you need more sequecing is in the gene expression tab (Median Genes per Cell), which will show if you are reaching a plato of genes detected per cell. 
     
-*Gene expression tab:
+*Gene expression tab:*
  
   1.5 - **tSNE of UMIs counts** UMI means number of strands those transcript where captured, if you have low number of genes per cell or/and low number UMI per cell it could mean that "cell" is not trully a cell but just background. 
     ![newplot](https://user-images.githubusercontent.com/97693929/205698722-ec53945d-dd56-40ff-9c13-253dec20fa07.png)
