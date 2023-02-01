@@ -1,5 +1,7 @@
-neo2data<-read.csv("/Volumes/lvd-qveu/Rebecca_Walker/neo2/22_12_20/22_12_20_e144a_rep3.csv")
-samplesheet<-read.csv("/Volumes/lvd-qveu/Rebecca_Walker/neo2/22_12_20/22_12_20_samplesheet.csv")
+neo2data<-read.csv("/Volumes/lvd-qveu/Rebecca_Walker/neo2/23_01_19/23_01_19_e144a_gdd_rep2.csv")
+samplesheet<-read.csv("/Volumes/lvd-qveu/Rebecca_Walker/neo2/23_01_19/23_01_19_samplesheet.csv")
+
+
 
 library(tidyr)
 library(datetime)
@@ -10,23 +12,37 @@ library(ggplot2)
 neo2data
 
 neo2_long<-pivot_longer(data=neo2data,cols=seq(3,98),names_to="well", values_to="luminescence")
-neo2_merge<-merge(samplesheet,neo2_long, by="well")
-neo2_merge
+neo2_long$Time_sec<-as.integer(as.time(neo2_long$Time))
 
-ggplot(neo2_merge)+geom_point(aes(as.time(Time),luminescence))
+neo2_merge<-merge(samplesheet,neo2_long, by="well",all=F)
+
+neo2_merge=na.omit(neo2_merge)
+
+
+ggplot(neo2_merge)+geom_point(aes((Time_sec-TimeDelay_sec)/3600,luminescence))
+
+ggplot(neo2_merge[neo2_merge$sample!="negative",])+
+  #geom_point(aes(as.time(Time),luminescence,col=sample))+
+  geom_line(aes((Time_sec-TimeDelay_sec)/3600,luminescence,col=sample,group=well),alpha=0.4)+
+  stat_summary(geom = "line",fun = mean,aes(col=sample,(Time_sec-TimeDelay_sec)/3600,luminescence, group=sample),lwd=2)+
+  scale_color_discrete()+scale_y_log10()+xlab("Time (hours)")
+
+ggplot(neo2_merge[neo2_merge$sample!="negative",])+
+  #geom_point(aes(as.time(Time),luminescence,col=sample))+
+  geom_line(aes((Time_sec-TimeDelay_sec)/3600,luminescence,col=sample,group=well),alpha=0.4)+
+  stat_summary(geom = "line",fun = mean,aes(col=sample,(Time_sec-TimeDelay_sec)/3600,luminescence, group=sample),lwd=2)+
+  scale_color_discrete()+xlab("Time (hours)")
 
 ggplot(neo2_merge)+
   #geom_point(aes(as.time(Time),luminescence,col=sample))+
-  geom_line(aes(as.time(Time),luminescence,col=sample,group=well),alpha=0.4)+
-  stat_summary(geom = "line",fun = mean,aes(col=sample,as.time(Time),luminescence, group=sample),lwd=2)+
-  scale_color_discrete()#+scale_y_log10()
-
-ggplot(neo2_merge)+
-  #geom_point(aes(as.time(Time),luminescence,col=sample))+
-  geom_line(aes(as.time(Time)/3600,luminescence,col=sample,group=well),alpha=0.4)+
-  stat_summary(geom = "line",fun = mean,aes(col=sample,as.time(Time)/3600,luminescence, group=sample),lwd=2)+
+  geom_line(aes(as.time(Time_sec-TimeDelay_sec)/3600,luminescence,col=sample,group=well),alpha=0.4)+
+  stat_summary(geom = "line",fun = mean,aes(col=sample,(Time_sec-TimeDelay_sec)/3600,luminescence, group=sample),lwd=2)+
   xlab("Time (hours)")+
   scale_color_discrete()#+scale_y_log10()
+
+
+##########################
+
 
 ggplot(
   neo2_merge[neo2_merge$sample%in%c("del E144A Renilla + WT Renilla + Guan","del Renilla + Guan","WT Renilla + Guan","WT E144A Renilla + del Renilla + Guan","mock","del E144A Renilla","WT E144A Renilla"),]
