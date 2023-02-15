@@ -1,0 +1,48 @@
+---
+title: "Stickleback_WB"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r}
+#Loading libraries:
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(ggpubr)
+library(ggfortify)
+```
+
+```{r}
+#Define input directory here. 
+inputdir="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0049_Insertional_Flag_Ha_Sun_Moon_Miseq/230210_M02211_0091_000000000-KCN8Y/Alignment_1/20230211_200710/Fastq/Merged_Reads_Flag_RepA/"
+
+#Read into input directory
+stickle <- read_csv(paste(inputdir,"/merge_stickleback.csv", sep = ""))
+#Filter modified positions. In this scenario, 745-3332 are the range of the capsid protein
+stickle <- filter(stickle,insPos_v>745,insPos_v<3332)
+#Plot counts and minimum deviation and save plot as png
+plot(ggplot(stickle)+geom_histogram(aes(minD)))
+ggsave("MinD_insertions.png",plot=last_plot(),device="png",path = inputdir)
+#Plot a histogram of counts of insertion positions. Bins are specified according to the amino acid length of the capsid protein and save image as png. 
+plot(ggplot(stickle)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =862))+annotate(geom="rect",xmin =746,xmax=952,ymin=0,ymax=20000,alpha=0.05,fill="yellow")+annotate(geom="rect",xmin =953,xmax=1714,ymin=0,ymax=20000,alpha=0.05,fill="green")+annotate(geom="rect",xmin =1715,xmax=2440,ymin=0,ymax=20000,alpha=0.05,fill="red")+annotate(geom="rect",xmin =2441,xmax=3331,ymin=0,ymax=20000,alpha=0.05,fill="blue")+annotate(geom="text",x=840,y=15000,label="VP4")+annotate(geom="text",x=1350,y=15000,label="VP2")+annotate(geom="text",x=2050,y=15000,label="VP3")+annotate(geom="text",x=2850,y=15000,label="VP1")+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions.png",plot=last_plot(),device="png",path = inputdir)
+
+ggplot(stickle,aes(x=insPos_v))+geom_point(stat="count")+annotate(geom="rect",xmin =746,xmax=952,ymin=0,ymax=700,alpha=0.05,fill="yellow")+annotate(geom="rect",xmin =953,xmax=1714,ymin=0,ymax=700,alpha=0.05,fill="green")+annotate(geom="rect",xmin =1715,xmax=2440,ymin=0,ymax=700,alpha=0.05,fill="red")+annotate(geom="rect",xmin =2441,xmax=3331,ymin=0,ymax=700,alpha=0.05,fill="blue")+annotate(geom="text",x=850,y=680,label="VP4")+annotate(geom="text",x=1350,y=680,label="VP2")+annotate(geom="text",x=2050,y=680,label="VP3")+annotate(geom="text",x=2850,y=680,label="VP1")+labs(x="Position", y="Count")+theme_bw()
+ggsave("Point_insertions.png",plot=last_plot(),device="png",path = inputdir)
+
+#Patrick's code
+plot(ggplot(stickle)+stat_summary(aes(insPos_v,...1),fun = "length",cex=0.2)+stat_summary(geom = "text",aes(insPos_v,...1,label=insPos_v),fun = "length",hjust=1))+annotate(geom="rect",xmin =746,xmax=952,ymin=0,ymax=1500,alpha=0.05,fill="yellow")+annotate(geom="rect",xmin =953,xmax=1714,ymin=0,ymax=1500,alpha=0.05,fill="green")+annotate(geom="rect",xmin =1715,xmax=2440,ymin=0,ymax=1500,alpha=0.05,fill="red")+annotate(geom="rect",xmin =2441,xmax=3331,ymin=0,ymax=1500,alpha=0.05,fill="blue")+annotate(geom="text",x=850,y=1450,label="VP4")+annotate(geom="text",x=1350,y=1450,label="VP2")+annotate(geom="text",x=2050,y=1450,label="VP3")+annotate(geom="text",x=2850,y=1450,label="VP1")+labs(x="Position", y="Count")+theme_bw()
+ggsave("Point_insertions_labeled.png",plot=last_plot(),device="png",path = inputdir)
+
+
+```
+
+
+
+
+
+
+
