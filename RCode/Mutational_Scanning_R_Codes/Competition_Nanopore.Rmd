@@ -1,0 +1,92 @@
+---
+title: "Competition_Nanopore"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Loading libraries:
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(ggpubr)
+library(ggfortify)
+
+```
+
+```{r}
+#test code here
+
+#Define input directories here. 
+inputdir_1="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode01/Flag_Stickleback/"
+inputdir_2="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode02/Flag_Stickleback/"
+inputdir_3="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode03/Flag_Stickleback/"
+inputdir_4="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode04/Flag_Stickleback/"
+inputdir_5="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode05/Flag_Stickleback/"
+inputdir_6="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode06/Flag_Stickleback/"
+inputdir_7="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode07/Flag_Stickleback/"
+inputdir_8="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode08/Flag_Stickleback/"
+inputdir_9="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0040_WB_Hits_Mix_P1/wbev71hitsmixp1/no_sample/20221209_1822_MC-113212_FAS72566_09c4209e/fastq_pass/barcode09/Flag_Stickleback/"
+
+#Read into input directory
+stickle1 <- read_csv(paste(inputdir_1,"/merge_stickleback.csv", sep = "")) 
+stickle2 <- read_csv(paste(inputdir_2,"/merge_stickleback.csv", sep = ""))
+stickle3 <- read_csv(paste(inputdir_3,"/merge_stickleback.csv", sep = ""))
+stickle4 <- read_csv(paste(inputdir_4,"/merge_stickleback.csv", sep = ""))
+stickle5 <- read_csv(paste(inputdir_5,"/merge_stickleback.csv", sep = ""))
+stickle6 <- read_csv(paste(inputdir_6,"/merge_stickleback.csv", sep = ""))
+stickle7 <- read_csv(paste(inputdir_7,"/merge_stickleback.csv", sep = ""))
+stickle8 <- read_csv(paste(inputdir_8,"/merge_stickleback.csv", sep = ""))
+stickle9 <- read_csv(paste(inputdir_9,"/merge_stickleback.csv", sep = ""))
+#Transform excel to tibbles
+stickle1 <- as.tibble(stickle1) 
+stickle2 <- as.tibble(stickle2)
+stickle3 <- as.tibble(stickle3)
+stickle4 <- as.tibble(stickle4)
+stickle5 <- as.tibble(stickle5)
+stickle6 <- as.tibble(stickle6)
+stickle7 <- as.tibble(stickle7)
+stickle8 <- as.tibble(stickle8)
+stickle9 <- as.tibble(stickle9)
+#Add a column giving a barcode for each tibble
+stickle1 <- add_column(stickle1,BC=1)
+stickle2 <- add_column(stickle2,BC=2)
+stickle3 <- add_column(stickle3,BC=3)
+stickle4 <- add_column(stickle4,BC=4)
+stickle5 <- add_column(stickle5,BC=5)
+stickle6 <- add_column(stickle6,BC=6)
+stickle7 <- add_column(stickle7,BC=7)
+stickle8 <- add_column(stickle8,BC=8)
+stickle9 <- add_column(stickle9,BC=9)
+#Merge all tibbles into one tibble called "Competition_Nanopore" + select here positions of interest to be compared
+Competition_Nanopore <- bind_rows(stickle1,stickle2,stickle3,stickle4,stickle5,stickle6,stickle7,stickle8,stickle9) %>% select(insPos_v,BC) %>% filter(insPos_v%in%c(1951,2500,2443,3325,3328))
+
+#Transform tibble into table with information about frequencies
+Competition_Nanopore <- table(Competition_Nanopore)
+#Transform table back to tibble then calculate frequency and pivot
+Competition_Nanopore <- as.tibble(Competition_Nanopore)
+Competition_Nanopore <- Competition_Nanopore %>% group_by(BC) %>% mutate(freq = n / sum(n))
+#Pivot to have the Barcodes as columns and values as frequencies then change the column names.
+Competition_Nanopore <- pivot_wider(Competition_Nanopore,names_from=BC,insPos_v,values_from=freq)
+colnames(Competition_Nanopore) <- c("insPos_v","BC1","BC2","BC3","BC4","BC5","BC6","BC7","BC8","BC9")
+#Normalize to the input DNA then calculate the average of thee technical replicates 
+Competition_Nanopore_perc <- transmute(Competition_Nanopore,insPos_v=insPos_v,BC1=BC1/BC7,BC2=BC2/BC8,BC3=BC3/BC9,BC4=BC4/BC7,BC5=BC5/BC8,BC6=BC6/BC9)
+Competition_Nanopore_perc
+Competition_Nanopore_perc <- transmute(Competition_Nanopore,insPos_v=insPos_v,BC1=BC1/sum(BC1),BC2=BC2/sum(BC2),BC3=BC3/sum(BC3),BC4=BC4/sum(BC4),BC5=BC5/sum(BC5),BC6=BC6/sum(BC6))
+Competition_Nanopore_final <- transmute(Competition_Nanopore_perc,insPos_v,ReplicateA=(BC1+BC2+BC3)/3,ReplicateB=(BC4+BC5+BC6)/3)
+#Calculate the arithmetic mean of the two biological replicates and the SD and ggplot.
+Competition_Nanopore_final <- mutate(Competition_Nanopore_final,Replicate=(ReplicateA+ReplicateB)/2)
+#Add column with the exact aminoacid insertion position and bind the column
+Insertional_hits <- c("402","566","585","860","862")
+Competition_Nanopore_final <- cbind(Competition_Nanopore_final,Insertional_hits)
+sd <- apply(Competition_Nanopore_final[, c("ReplicateA","ReplicateB")],1,sd)
+#ggplot_Column relative frequency with error bars 
+ggplot(Competition_Nanopore_final)+geom_col(aes(Insertional_hits,Replicate))+geom_errorbar(aes(x=Insertional_hits,ymin=Replicate-sd, ymax=Replicate+sd), width=.4,position=position_dodge(.9))+theme_bw()+labs(x="Insertional hits",y="Relative frequency")
+ggsave("Frequency_Competition_Nanopore.png",plot=last_plot(),device="png",path = inputdir_1)
+Competition_Nanopore_final
+
+```
+

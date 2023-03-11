@@ -1,0 +1,258 @@
+---
+title: "DMS_Saturation_Mutagensis"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r}
+#Loading libraries:
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(ggpubr)
+```
+
+
+```{r}
+#Wild type counts before selection and after selection.
+Cbefore <- transmute(rowwise(input),maxvalue=max(c_across(1:21)))
+Caftera <- transmute(rowwise(RepA),maxvalue=max(c_across(1:21)))
+Cafterb <- transmute(rowwise(RepB),maxvalue=max(c_across(1:21)))
+Cafterc <- transmute(rowwise(RepC),maxvalue=max(c_across(1:21)))
+Cbefore
+CA <- Cbefore/Caftera
+CB <- Cbefore/Cafterb
+CC <- Cbefore/Cafterc
+Repa_normalized <- (RepA/input)
+Repa_normalized <- cbind(Repa_normalized,CA)
+Repa_normalized <- mutate(Repa_normalized,A=A*maxvalue,C=C*maxvalue,D=D*maxvalue,E=E*maxvalue,F=F*maxvalue,G=G*maxvalue,H=H*maxvalue,I=I*maxvalue,K=K*maxvalue,L=L*maxvalue,M=M*maxvalue,N=N*maxvalue,P=P*maxvalue,Q=Q*maxvalue,R=R*maxvalue,S=S*maxvalue,T=T*maxvalue,V=V*maxvalue,W=W*maxvalue,X=X*maxvalue,Y=Y*maxvalue)
+Repb_normalized <- (RepB/input)
+Repb_normalized <- cbind(Repb_normalized,CB)
+Repb_normalized <- mutate(Repb_normalized,A=A*maxvalue,C=C*maxvalue,D=D*maxvalue,E=E*maxvalue,F=F*maxvalue,G=G*maxvalue,H=H*maxvalue,I=I*maxvalue,K=K*maxvalue,L=L*maxvalue,M=M*maxvalue,N=N*maxvalue,P=P*maxvalue,Q=Q*maxvalue,R=R*maxvalue,S=S*maxvalue,T=T*maxvalue,V=V*maxvalue,W=W*maxvalue,X=X*maxvalue,Y=Y*maxvalue) 
+Repc_normalized <- (RepC/input)
+Repc_normalized <- cbind(Repc_normalized,CC)
+Repc_normalized <- mutate(Repc_normalized,A=A*maxvalue,C=C*maxvalue,D=D*maxvalue,E=E*maxvalue,F=F*maxvalue,G=G*maxvalue,H=H*maxvalue,I=I*maxvalue,K=K*maxvalue,L=L*maxvalue,M=M*maxvalue,N=N*maxvalue,P=P*maxvalue,Q=Q*maxvalue,R=R*maxvalue,S=S*maxvalue,T=T*maxvalue,V=V*maxvalue,W=W*maxvalue,X=X*maxvalue,Y=Y*maxvalue) 
+#Mean of the three replicate values
+triplicate <- (Repa_normalized+Repb_normalized+Repc_normalized)/3
+#Remove stop codone and max value columns
+triplicate <- triplicate[-c(22,20)]
+hist(log2(as.matrix(triplicate)))
+
+#Collect standard deviation for dot plots
+
+Rep_a_only_normalized <- (RepA/input)
+Rep_b_only_normalized <- (RepB/input)
+Rep_c_only_normalized <- (RepC/input)
+Rep_only_normalized <- (Rep_a_only_normalized+Rep_b_only_normalized+Rep_c_only_normalized)/3
+hist(log10(as.matrix(Rep_only_normalized)))
+
+
+
+
+```
+
+```{r}
+#Selecting only amino acid variants
+AA_only <- select(input,A:W,Y)
+AA_only
+#Selecting only rows of concern: VP4
+VP4_only <- slice(AA_only,1:69)
+VP4_only
+#Replacing WT frequencies with 0
+VP4_only[VP4_only> 100000] <- 0
+VP4_only
+#Transforming df into long format
+VP4_only_long <- VP4_only %>% select(A:Y) %>% gather(Variants,Counts)
+VP4_only_long
+#Plotting df
+ggplot(VP4_only_long, aes(x=Counts))+geom_histogram()+facet_wrap(vars(Variants),scales="free")
+ggplot(VP4_only_long, aes(x=Counts))+geom_density()+facet_wrap(vars(Variants),scales="free")
+ggplot(VP4_only_long, aes(y=Counts))+geom_boxplot(outlier.shape = NA)+facet_wrap(vars(Variants),scales="free")+ylim(0,1000)
+Boxplot <- ggplot(VP4_only_long, aes(y=Counts,x=Variants))+geom_boxplot(outlier.shape = NA)+ylim(0,1000)
+Boxplot
+Boxplot <- ggsave("Variants_Counts.pdf")
+```
+```{r}
+#Selecting only amino acid variants
+AA_only <- select(input,A:W,Y)
+AA_only
+#Selecting only rows of concern: VP4 protein
+VP4_only <- slice(AA_only,1:69)
+VP4_only
+#Removing variant values
+VP4_only[VP4_only< 10000] <- NA
+#Creating new position column 
+VP4_only["Position"] <- seq(1,69)
+VP4_only
+#Creating long df
+VP4_only_long <- pivot_longer(VP4_only,cols = 1:20,names_to = "Variant",values_to="Count")
+VP4_only_long
+#Plotting data
+ggplot(VP4_only_long)+geom_point(aes(Position,Count,colour= factor(Variant)))
+```
+
+```{r}
+#Selecting only amino acid variants
+AA_only <- select(input,A:W,Y)
+AA_only
+#Selecting only rows of concern: VP4 protein
+VP4_only <- slice(AA_only,1:69)
+VP4_only
+#Removing wt values
+VP4_only[VP4_only> 10000] <- 0
+#Creating position column
+VP4_only["Position"] <- seq(1,69)
+VP4_only
+#Creating long df
+VP4_only_long <- pivot_longer(VP4_only,cols = 1:20,names_to = "Variant",values_to="Count")
+VP4_only_long
+#Plotting data
+ggplot(VP4_only_long)+geom_point(aes(Position,log(Count),colour= factor(Variant)))
+```
+
+```{r}
+#Selecting only amino acid variants
+AA_only <- select(input,A:W,Y)
+AA_only
+#Selecting only rows of concern: VP4 protein
+VP4_only <- slice(AA_only,1:69)
+VP4_only
+VP4_only["Position"] <- seq(1,69)
+VP4_only
+#Creating long df
+VP4_only_long <- pivot_longer(VP4_only,cols = 1:20,names_to = "Variant",values_to="Count")
+VP4_only_long
+#Frequency df
+VP4_only_Long_Frequency <- VP4_only_long %>% group_by(Position) %>% mutate(Percentage=Count/(sum(Count))*100)
+VP4_only_long_Frequency_Filtered <- filter(VP4_only_Long_Frequency,Percentage<5)
+VP4_only_long_Frequency_Filtered
+VP4_only_long_Frequency_Filtered$Variant=factor(VP4_only_long_Frequency_Filtered$Variant,levels = c("M","A","I","L","V","F","W","Y","N","C","Q","S","T","E","D","H","K","R","P","G"))
+#Plotting frequency df
+Gem_point_DMS <- ggplot(VP4_only_long_Frequency_Filtered)+geom_point(aes(Position,Percentage,colour= factor(Variant)))
+Gem_point_DMS
+Gem_point_DMS <- ggsave("Percentage_DMS.pdf")
+Heat_Map_DMS <- ggplot(VP4_only_long_Frequency_Filtered)+geom_tile(aes(Position,Variant,fill=log10(Percentage)),color="black")+scale_fill_viridis_c()+coord_fixed()
+Heat_Map_DMS
+Heat_Map_DMS <-  ggsave("heat_map_input_Normalized_percentage.pdf",height=6,width=49)
+
+#Plotting Counts df
+Gem_point_DMS <- ggplot(VP4_only_long_Frequency_Filtered)+geom_point(aes(Position,log10(Count),colour= factor(Variant)))
+Gem_point_DMS
+Gem_point_DMS <- ggsave("Count_DMS.pdf")
+Heat_Map_DMS_count <- ggplot(VP4_only_long_Frequency_Filtered)+geom_tile(aes(Position,Variant,fill=log10(Count)),color="black")+scale_fill_viridis_c()+coord_fixed()
+Heat_Map_DMS_count
+Heat_Map_DMS_count <-  ggsave("heat_map_input_Normalized_count.pdf",height=6,width=49)
+
+
+
+
+```
+
+
+
+```{r}
+#Selecting only amino acid variants
+AA_only <- select(triplicate,A:W,Y)
+AA_only
+#Selecting only rows of concern: VP4 protein
+VP4_only <- slice(AA_only,1:69)
+VP4_only
+VP4_only["Position"] <- seq(1,69)
+VP4_only
+#Creating long df
+VP4_only_long <- pivot_longer(VP4_only,cols = 1:20,names_to = "Variant",values_to="Ratio")
+VP4_only_long$Variant=factor(VP4_only_long$Variant,levels = c("M","A","I","L","V","F","W","Y","N","C","Q","S","T","E","D","H","K","R","P","G"))
+
+#Frequency of dataframe   
+Gem_point_DMS <- ggplot(VP4_only_long_Frequency_Filtered)+geom_point(aes(Position,Percentage,colour= factor(Variant)))
+Gem_point_DMS
+Gem_point_DMS <- ggsave("Percentage_DMS.pdf")
+Heat_Map_DMS <- ggplot(VP4_only_long)+geom_tile(aes(Position,Variant,fill=log10(Ratio)),color="black")+scale_fill_gradient2(midpoint = 0)+coord_fixed()
+Heat_Map_DMS
+Heat_Map_DMS <-  ggsave("heat_map.pdf",height=6,width=49)
+
+```
+
+
+```{r}
+#Plotting replicates against each other
+
+Repa_normalized
+Repb_normalized
+Repc_normalized
+
+
+
+#Selecting only amino acid variants
+AA_only_Repa <- select(Repa_normalized,A:W,Y)
+AA_only_Repa
+#Selecting only rows of concern: VP4 protein
+VP4_only_Repa <- slice(AA_only_Repa,1:69)
+VP4_only_Repa
+VP4_only_Repa["Position"] <- seq(1,69)
+VP4_only_Repa
+#Creating long df
+VP4_only_long_Repa <- pivot_longer(VP4_only_Repa,cols = 1:20,names_to = "Variant",values_to="Ratio")
+VP4_only_long_Repa 
+
+#Selecting only amino acid variants
+AA_only_Repb <- select(Repb_normalized,A:W,Y)
+AA_only_Repb
+#Selecting only rows of concern: VP4 protein
+VP4_only_Repb <- slice(AA_only_Repb,1:69)
+VP4_only_Repb
+VP4_only_Repb["Position"] <- seq(1,69)
+VP4_only_Repb
+#Creating long df
+VP4_only_long_Repb<- pivot_longer(VP4_only_Repb,cols = 1:20,names_to = "Variant",values_to="Ratio")
+VP4_only_long_Repb
+
+#Selecting only amino acid variants
+AA_only_Repc <- select(Repc_normalized,A:W,Y)
+AA_only_Repc
+#Selecting only rows of concern: VP4 protein
+VP4_only_Repc <- slice(AA_only_Repc,1:69)
+VP4_only_Repc
+VP4_only_Repc["Position"] <- seq(1,69)
+VP4_only_Repc
+#Creating long df
+VP4_only_long_Repc<- pivot_longer(VP4_only_Repc,cols = 1:20,names_to = "Variant",values_to="Ratio")
+VP4_only_long_Repc
+
+
+plot(VP4_only_long_Repa$Ratio,VP4_only_long_Repb$Ratio)+abline(0.03803,0.96563)
+plot(VP4_only_long_Repa$Ratio,VP4_only_long_Repc$Ratio)+abline(0.1022,0.8582)
+plot(VP4_only_long_Repb$Ratio,VP4_only_long_Repc$Ratio)+abline(0.1344,0.8122)
+
+
+lm(VP4_only_long_Repa$Ratio ~ VP4_only_long_Repb$Ratio)
+lm(VP4_only_long_Repa$Ratio ~ VP4_only_long_Repc$Ratio)
+lm(VP4_only_long_Repb$Ratio ~ VP4_only_long_Repc$Ratio)
+
+ggplot(VP4_only_long_Repa$Ratio,VP4_only_long_Repb$Ratio)
+  
+  geom_smooth(method = "lm", se=FALSE, color="#6d6d6dff", formula = y ~ x)
+
+
+graph1 <- ggplot(table, aes(x=date, y=distance, colour=as.factor(cluster))) +
+  geom_point(shape = 20, alpha = 0.5, size = 10, show.legend = TRUE) +
+  geom_smooth(method = "lm", se=FALSE, color="#6d6d6dff", formula = y ~ x) +
+  #geom_point(alpha = 1, size = 3.1, show.legend = TRUE) +
+  scale_color_manual(values = mycols) +
+  theme_classic() +
+  theme(text = element_text(size = 18), axis.text.x = element_text(size=18), axis.text.y = element_text(size=18)) +
+  xlab("Days") + ylab("Root-to-tip divergence (substitutions/site)")
+
+
+plotnamehere <- ggsave("")
+
+```
+
+
+
+
+
+
+
