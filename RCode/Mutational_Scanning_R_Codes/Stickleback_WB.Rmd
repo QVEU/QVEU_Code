@@ -16,6 +16,7 @@ library(ggfortify)
 ```
 
 ```{r}
+#Capsid_proteins_EVA71
 #Define input directory here. 
 inputdir="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0049_Insertional_Flag_Ha_Sun_Moon_Miseq/230210_M02211_0091_000000000-KCN8Y/Alignment_1/20230211_200710/Fastq/Merged_Reads_Flag_RepA/"
 
@@ -39,8 +40,106 @@ ggsave("Point_insertions_labeled.png",plot=last_plot(),device="png",path = input
 
 
 ```
+```{r}
+
+#Replication_proteins_EVA71_Stickleback_Analaysis
+#Define input directory here. 
+inputdir="/Volumes/LVD_QVE/Sequencing_Data/QVEU_Seq_0060_Insertional_Replication_Proteins_Flag_HA/fastq_pass/barcode11/"
+
+#Read into input directory
+stickle <- read_csv(paste(inputdir,"/merge_stickleback.csv", sep = ""))
+stickle <- select(stickle,minD,insPos_v)
+stickle
+#Filter modified positions. In this scenario, 3331-7325 are the range of the replication protein
+stickle <- filter(stickle,insPos_v>3331,insPos_v<7325)
+#Plot counts and minimum deviation and save plot as png
+plot(ggplot(stickle)+geom_histogram(aes(minD)))
+ggsave("MinD_insertions.png",plot=last_plot(),device="png",path = inputdir)
+#Plot a histogram of counts of insertion positions. Bins are specified according to the amino acid length of the replication protein and save image as png. 
+plot(ggplot(stickle)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =1331))+annotate(geom="rect",xmin =3332,xmax=3781,ymin=0,ymax=20000,alpha=0.05,fill="yellow")+annotate(geom="rect",xmin =3782,xmax=4078,ymin=0,ymax=20000,alpha=0.05,fill="green")+annotate(geom="rect",xmin =4079,xmax=5065,ymin=0,ymax=20000,alpha=0.05,fill="red")+annotate(geom="rect",xmin =5066,xmax=5323,ymin=0,ymax=20000,alpha=0.05,fill="blue")+annotate(geom="rect",xmin =5324,xmax=5389,ymin=0,ymax=20000,alpha=0.05,fill="violet")+annotate(geom="rect",xmin =5390,xmax=5938,ymin=0,ymax=20000,alpha=0.05,fill="pink")+annotate(geom="rect",xmin =5939,xmax=7324,ymin=0,ymax=20000,alpha=0.05,fill="purple")+annotate(geom="text",x=3556,y=15000,label="2A")+annotate(geom="text",x=3930,y=15000,label="2B")+annotate(geom="text",x=4557,y=15000,label="2C")+annotate(geom="text",x=5195,y=15000,label="3A")+annotate(geom="text",x=5356,y=15000,label="3B")+annotate(geom="text",x=5664,y=15000,label="3C")+annotate(geom="text",x=6508,y=15000,label="3D")+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions.png",plot=last_plot(),device="png",path = inputdir)
+
+ggplot(stickle,aes(x=insPos_v))+geom_point(stat="count")+annotate(geom="rect",xmin =3332,xmax=3781,ymin=0,ymax=20000,alpha=0.05,fill="yellow")+annotate(geom="rect",xmin =3782,xmax=4078,ymin=0,ymax=20000,alpha=0.05,fill="green")+annotate(geom="rect",xmin =4079,xmax=5065,ymin=0,ymax=20000,alpha=0.05,fill="red")+annotate(geom="rect",xmin =5066,xmax=5323,ymin=0,ymax=20000,alpha=0.05,fill="blue")+annotate(geom="rect",xmin =5324,xmax=5389,ymin=0,ymax=20000,alpha=0.05,fill="violet")+annotate(geom="rect",xmin =5390,xmax=5938,ymin=0,ymax=20000,alpha=0.05,fill="pink")+annotate(geom="rect",xmin =5939,xmax=7324,ymin=0,ymax=20000,alpha=0.05,fill="purple")+annotate(geom="text",x=3556,y=15000,label="2A")+annotate(geom="text",x=3930,y=15000,label="2B")+annotate(geom="text",x=4557,y=15000,label="2C")+annotate(geom="text",x=5195,y=15000,label="3A")+annotate(geom="text",x=5356,y=15000,label="3B")+annotate(geom="text",x=5664,y=15000,label="3C")+annotate(geom="text",x=6508,y=15000,label="3D")+labs(x="Position", y="Count")+theme_bw()+scale_y_log10()
+ggsave("Point_insertions.png",plot=last_plot(),device="png",path = inputdir)
+
+#Patrick's code
+plot(ggplot(stickle)+stat_summary(aes(insPos_v,...1),fun = "length",cex=0.2)+stat_summary(geom = "text",aes(insPos_v,...1,label=insPos_v),fun = "length",hjust=1))+annotate(geom="rect",xmin =3332,xmax=3781,ymin=0,ymax=20000,alpha=0.05,fill="yellow")+annotate(geom="rect",xmin =3782,xmax=4078,ymin=0,ymax=20000,alpha=0.05,fill="green")+annotate(geom="rect",xmin =4079,xmax=5065,ymin=0,ymax=20000,alpha=0.05,fill="red")+annotate(geom="rect",xmin =5066,xmax=5323,ymin=0,ymax=20000,alpha=0.05,fill="blue")+annotate(geom="rect",xmin =5324,xmax=5389,ymin=0,ymax=20000,alpha=0.05,fill="violet")+annotate(geom="rect",xmin =5390,xmax=5938,ymin=0,ymax=20000,alpha=0.05,fill="pink")+annotate(geom="rect",xmin =5939,xmax=7324,ymin=0,ymax=20000,alpha=0.05,fill="purple")+annotate(geom="text",x=3556,y=19000,label="2A")+annotate(geom="text",x=3930,y=19000,label="2B")+annotate(geom="text",x=4557,y=19000,label="2C")+annotate(geom="text",x=5195,y=19000,label="3A")+annotate(geom="text",x=5356,y=19000,label="3B")+annotate(geom="text",x=5664,y=19000,label="3C")+annotate(geom="text",x=6508,y=19000,label="3D")+labs(x="Position", y="Count")+theme_bw()
+ggsave("Point_insertions_labeled.png",plot=last_plot(),device="png",path = inputdir)
+
+#Insertions specifically in 2A
+stickle2A <- filter(stickle,insPos_v>3331,insPos_v<3782)
+stickle2A_count <- count(stickle2A,insPos_v)
+stickle2A_count <- arrange(stickle2A_count,desc(n))
+stickle2A_count
+write.table(stickle2A_count,file="stickle2A_count.csv",row.names=FALSE,sep=",")
+plot(ggplot(stickle2A)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =150))+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions_2A.png",plot=last_plot(),device="png",path = inputdir)
+ggplot(stickle2A,aes(x=insPos_v,label=insPos_v))+geom_point(stat="count")+labs(x="Position", y="Count")+theme_bw()+scale_y_log10()
+ggsave("Point_insertions_2A.png",plot=last_plot(),device="png",path = inputdir)
+#Insertions specifically in 2B
+stickle2B <- filter(stickle,insPos_v>3781,insPos_v<4079)
+stickle2B_count <- count(stickle2B,insPos_v)
+stickle2B_count <- arrange(stickle2B_count,desc(n))
+stickle2B_count
+write.table(stickle2B_count,file="stickle2B_count.csv",row.names=FALSE,sep=",")
+plot(ggplot(stickle2B)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =99))+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions_2B.png",plot=last_plot(),device="png",path = inputdir)
+ggplot(stickle2B,aes(x=insPos_v,label=insPos_v))+geom_point(stat="count")+labs(x="Position", y="Count")+theme_bw()+scale_y_log10()
+ggsave("Point_insertions_2B.png",plot=last_plot(),device="png",path = inputdir)
+#Insertions specifically in 2C
+stickle2C <- filter(stickle,insPos_v>4078,insPos_v<5066)
+stickle2C_count <- count(stickle2C,insPos_v)
+stickle2C_count <- arrange(stickle2C_count,desc(n))
+stickle2C_count
+write.table(stickle2C_count,file="stickle2C_count.csv",row.names=FALSE,sep=",")
+plot(ggplot(stickle2C)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =329))+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions_2C.png",plot=last_plot(),device="png",path = inputdir)
+ggplot(stickle2C,aes(x=insPos_v,label=insPos_v))+geom_point(stat="count")+labs(x="Position", y="Count")+theme_bw()+scale_y_log10()
+ggsave("Point_insertions_2C.png",plot=last_plot(),device="png",path = inputdir)
+#Insertions specifically in 3A
+stickle3A <- filter(stickle,insPos_v>5065,insPos_v<5324)
+stickle3A_count <- count(stickle3A,insPos_v)
+stickle3A_count <- arrange(stickle3A_count,desc(n))
+stickle3A_count
+write.table(stickle3A_count,file="stickle3A_count.csv",row.names=FALSE,sep=",")
+plot(ggplot(stickle3A)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =86))+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions_3A.png",plot=last_plot(),device="png",path = inputdir)
+ggplot(stickle3A,aes(x=insPos_v,label=insPos_v))+geom_point(stat="count")+labs(x="Position", y="Count")+theme_bw()+scale_y_log10()
+ggsave("Point_insertions_3A.png",plot=last_plot(),device="png",path = inputdir)
+#Insertions specifically in 3B
+stickle3B <- filter(stickle,insPos_v>5323,insPos_v<5390)
+stickle3B_count <- count(stickle3B,insPos_v)
+stickle3B_count <- arrange(stickle3B_count,desc(n))
+stickle3B_count
+write.table(stickle3B_count,file="stickle3B_count.csv",row.names=FALSE,sep=",")
+plot(ggplot(stickle3B)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =22))+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions_3B.png",plot=last_plot(),device="png",path = inputdir)
+ggplot(stickle3B,aes(x=insPos_v,label=insPos_v))+geom_point(stat="count")+labs(x="Position", y="Count")+theme_bw()+scale_y_log10()
+ggsave("Point_insertions_3B.png",plot=last_plot(),device="png",path = inputdir)
+#Insertions specifically in 3C
+stickle3C <- filter(stickle,insPos_v>5389,insPos_v<5939)
+stickle3C_count <- count(stickle3C,insPos_v)
+stickle3C_count <- arrange(stickle3C_count,desc(n))
+stickle3C_count
+write.table(stickle3C_count,file="stickle3C_count.csv",row.names=FALSE,sep=",")
+plot(ggplot(stickle3C)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =183))+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions_3C.png",plot=last_plot(),device="png",path = inputdir)
+ggplot(stickle3C,aes(x=insPos_v,label=insPos_v))+geom_point(stat="count")+labs(x="Position", y="Count")+theme_bw()+scale_y_log10()
+ggsave("Point_insertions_3C.png",plot=last_plot(),device="png",path = inputdir)
+#Insertions specifically in 3D
+stickle3D <- filter(stickle,insPos_v>5938,insPos_v<7325)
+stickle3D_count <- count(stickle3D,insPos_v)
+stickle3D_count <- arrange(stickle3D_count,desc(n))
+stickle3D_count
+write.table(stickle3D_count,file="stickle3D_count.csv",row.names=FALSE,sep=",")
+plot(ggplot(stickle3D)+scale_y_log10()+geom_histogram(aes(insPos_v),position="stack",bins =462))+labs(x="Position", y="Count")+theme_bw()
+ggsave("Histogram_insertions_3D.png",plot=last_plot(),device="png",path = inputdir)
+ggplot(stickle3D,aes(x=insPos_v,label=insPos_v))+geom_point(stat="count")+labs(x="Position", y="Count")+theme_bw()+scale_y_log10()
+ggsave("Point_insertions_3D.png",plot=last_plot(),device="png",path = inputdir)
 
 
+
+```
 
 
 
