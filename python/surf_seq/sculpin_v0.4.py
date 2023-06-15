@@ -4,15 +4,10 @@
 # Quantitative Virology and Evolution Unit
 
 """
-Slimy sculpin (Cottus cognatus), a nocturnal fish, v0.5
-From aligned, phred-score = 20 cutoff, Q20.txt files, call each consensus.
+Leptocottus armatus (Pacific staghorn sculpin), v0.4
+From aligned, phred-score = 20 cutoff, Q20.txt files, call each consensus
 mutation in each replicate of a 8-replicate, 12-condition passaging experiment
-Returns a single .csv file with information for each nucleotide-position.
 """
-
-# +++ TO DO +++ #
-# - Parse Sam files for more accurate codon information
-# - Fix melted_df being 4X too large with NaN in 3 out of 4 nucleotide counts
 
 # Import modules
 import numpy as np
@@ -20,27 +15,75 @@ import pandas as pd
 import glob
 from Bio import Seq
 
+
+# Define function for extracting consensus and >50% mutants
+def Q20_to_consensus(q20_df, count_thresh=10):
+    """
+    Read through dataframe of position nucleotide counts
+    
+    param: q20_df, Pandas DataFrame encompassing nucleotide counts
+
+    param: count_thresh, threshold of coverage at each position required
+    to declare the consensus
+
+    return: consensus_list, list of consensus nucleotides
+    
+    return: sums, list of total number of nucleotides at each position
+    """
+    
+    pos2nuc = {0:'A', 1:'C', 2:'G', 3:'T'}
+    # Make list of max nucleotides
+    consensus_list = []
+    sums = []
+    for i in range(len(q20_df)):
+        if sum(q20_df.iloc[i]) >= count_thresh:
+            new_nuc = pos2nuc[list(q20_df.iloc[i]).index(max(list(q20_df.iloc[i])))]
+        else:
+            new_nuc = 'N'
+        sums.append(q20_df.iloc[i].sum())
+
+        consensus_list.append(new_nuc)
+    return consensus_list, sums
+
+# Extract locations of all Q20 files
+global_dir = 'data/sequences/'
+
 # Find locations of the sequencing from the initial virus (US/MO/2014-18947=MO, 
 # Fermon=Fermon)
 
 fermon_consensus = open('data/sequences/full_genome/fermon.fa').readlines()[1]
 mo_consensus = open('data/sequences/full_genome/18947.fa').readlines()[1][1:]
 
-# Locations of Nanopore Q20 files
+
+"""base_dir = global_dir+'EV-D68_FL_strains/no_sample/20220929_1953_MC-113212_FAT29776_5b010243/fastq_pass/'
+MO_P0_Q20_loc = base_dir + 'barcode08/barcode08_aligned_Q8.txt'
+Fermon_P0_Q20_loc = base_dir + 'barcode16/barcode16_aligned_Q8.txt'
+"""
+
+"""# Import data as dataframe
+MO_P0_Q20_df = pd.read_csv(MO_P0_Q20_loc, delimiter='\t')
+MO_P0_Q20_df.columns = ['A', 'C', 'G', 'T', 'N']
+Fermon_P0_Q20_df = pd.read_csv(Fermon_P0_Q20_loc, delimiter='\t')
+Fermon_P0_Q20_df.columns = ['A', 'C', 'G', 'T', 'N']
+
+# Define reference lengths
+MO_length = 7350
+Fermon_length = 7350"""
+"""mo_consensus = open(MO_P0_Q20_loc, 'r').readlines()[1][1:]
+fermon_consensus = open(Fermon_P0_Q20_loc, 'r').readlines()[1][1:]"""
 print('Reading in files')
 new_P1_dir = 'data/sequences/2023-02-06_passage_1/Q20/*.txt'
 new_P2_dir = 'data/sequences/2023-02-27_passage_2/Q20/*.txt'
 new_P3_dir = 'data/sequences/2023-03-14_passage_3/Q20/*.txt'
 new_P4_dir = 'data/sequences/2023-04-06_passage_4/Q20/*.txt'
 new_P5_dir = 'data/sequences/2023-05-30_passage_5/Q20/*.txt'
-directories = [new_P1_dir, new_P2_dir, new_P3_dir, new_P4_dir, new_P5_dir]
 
-# Locations of Miseq Q20 files
 """new_P1_dir = 'data/sequences/2023-04-17_passage_1/trimmed_Q20/*.txt'
 new_P2_dir = 'data/sequences/2023-05-01_passage_2/trimmed_Q20/*.txt'
 new_P3_dir = 'data/sequences/2023-05-05_passage_3/trimmed_Q20/*.txt'
 new_P4_dir = 'data/sequences/2023-05-08_passage_4/trimmed_Q20/*.txt'"""
 
+directories = [new_P1_dir, new_P2_dir, new_P3_dir, new_P4_dir, new_P5_dir]
 
 # Iterate through Q20 directories
 passage_files = [sorted(glob.glob(directory)) for directory in directories]
@@ -76,6 +119,8 @@ for j, passage in enumerate(Q20_df):
 
 # Concatanate Q20 file
 Q20_df_list = pd.concat([pd.concat(Q20_df[i]) for i in range(len(Q20_df))])
+#Q20_df_list = Q20_df_list.astype({"passage": int, "cell": str, "strain": str, 
+#"replicate": str, "temperature":int})
 Q20_df_list = Q20_df_list.rename(columns={'0': 'A', '0.1': 'C', '0.2': 'G', 
     '0.3': 'T', '0.4': 'N'})
 
@@ -87,6 +132,8 @@ print('Melting DataFrame into nucleotide-position')
 melted_df = pd.concat([Q20_df_list[[x, 'passage', 'cell', 'strain', 'temperature','replicate', 'nucleotide position', 'coverage']] for x in ['A', 'C', 'G', 'T']])
 melted_df = pd.melt(melted_df, ['passage', 'cell', 'strain', 'temperature','replicate', 'nucleotide position', 'coverage'])
 melted_df['percent'] = melted_df['value'] / melted_df['coverage']
+#melted_df['percent'] = melted_df['percent'].replace({np.nan:0})
+#melted_df['value'] = melted_df['percent'].replace({np.nan:0})
 
 # Need a list of Fermon protein start and stops
 fermon_protein_pos = {"5' UTR":1, 'VP4':731, 'VP2':938, 'VP3':1682, 'VP1':2387,
@@ -185,4 +232,12 @@ for i in range(len(melted_df)):
             temp_file.write(new_line)
             temp_file.write('\n')
 temp_file.close()
+#protein_info_df = pd.read_csv('data/temp_aa_data.csv', delimiter=',')    
+#protein_info_df.columns = ['WT nucleotide', 'protein', 'protein position', 'WT codon', 'mutant codon', 
+#'WT aa', 'mutant aa', 'non-synonymous', 'nucleotide position', 'variable']
+"""print('Merging protein data with condition data')
+full_table = pd.merge(left=melted_df, right=protein_info_df, 
+    left_on=['nucleotide position', 'variable'], right_on=['nucleotide position', 'variable'])
+print('Writing to file')"""
+#temp_file.to_csv('data/EV-D68_all_passage_data_v5.csv')
 print('Done')
