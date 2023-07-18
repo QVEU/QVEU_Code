@@ -7,70 +7,7 @@ ChimeraX is a macromolecular structure visualization software.
 
 ![ChimeraX](https://www.cgl.ucsf.edu/chimerax/docs/quickstart/images/chimerax.png)
 
-## Install
+## Installation
+ChimeraX can be installed from UCSF: [https://www.cgl.ucsf.edu/chimerax/download.html#release](https://www.cgl.ucsf.edu/chimerax/download.html#release)
 
-These are the elements outlined in John Gruber’s original design document. All Markdown applications support these elements.
-
-## Heading
-
-\# H1
-# H1
-
-\## H2
-## H2
-\### H3
-### H3
-
-## Bold
-
-```
-**bold text**
-```
-**bold text**
-
-## Italic
-
-```
-*italicized text*
-```
-*italicized text*
-
-## Blockquote
-```
-> blockquote
-```
-> blockquote
-
-## Ordered List
-```
-1. First item 
-2. Second item 
-3. Third item 
-```
-
-1. First item
-2. Second item
-3. Third item
-
-## Unordered List
-
-```
-- First item
-- Second item 
-- Third item
-```
-- First item
-- Second item
-- Third item
----
-## Code
-
-```
-`code`
-```
-`code`
-
-### Image
-```
-
-```
+## 
