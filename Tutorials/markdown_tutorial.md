@@ -171,4 +171,4 @@ H<sub>2</sub>O
 ```
 <sup>2</sup>
 ```
-e=mc<sub>2</sub>
+e=mc<sup>2</sup>
