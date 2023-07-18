@@ -32,6 +32,17 @@ hide atoms
 ```
 color bychain
 ```
+### Color by Sequence Conservation
+Open alignment in ChimeraX containing sequences matching structure(s) of interest.
+Structures should automatically associate with the relevant sequence. The header color in the alignment will match the structure color if this has happened. To manually associate a structure to a sequence, right click the alignment window, select "Structure" then "Associations" and match the sequence to the structure.
+```
+color byattr seq_conservation
+```
+
+Use sequence conservtion with conditions
+```
+color #1/A::seq_conservation=1 red #color fully conserved residues red in structure 1 chain A
+```
 ## Biophysics
 ### Display hydrophobic surface
 ```
@@ -41,4 +52,8 @@ mlp
 ```
 coloumbic
 ```
- 
+
+## Compare Structures
+```
+match #2 to #1/a 
+```
