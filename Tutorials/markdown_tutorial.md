@@ -163,9 +163,9 @@ What an amazing discovery! :rocket:
 ### Subscript
 
 ```
-H~2~O
+H<sub>2</sub>O
 ```
-H~2~O
+H<sub>2</sub>O
 
 ### Superscript
 ```
