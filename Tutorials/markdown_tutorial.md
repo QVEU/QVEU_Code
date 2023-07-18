@@ -169,6 +169,6 @@ H<sub>2</sub>O
 
 ### Superscript
 ```
-X^2^
+<sup>2</sup>
 ```
-X^2^
+<sub>2</sub>
