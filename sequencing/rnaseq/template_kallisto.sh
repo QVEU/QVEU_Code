@@ -34,4 +34,4 @@ module load kallisto/0.45.0-goolf-1.7.20
 # Run kallisto transcript quantification, using 30 bootstraps, with the reference human index computed above, to the output folder: WT_RD_37
 # Make sure to pair the input fastq.gz files with R1/R2 of each replicate
 
-kallisto quant -b 30 -i human -o WT_RD_37 WT_RD_37_1_S13_R1_001.fastq.gz WT_RD_37_1_S13_R2_001.fastq.gz WT_RD_37_2_S14_R1_001.fastq.gz WT_RD_37_2_S14_R2_001.fastq.gz
+kallisto quant -b 30 -i human -o WT_RD_37 WT_RD_37_1_S13_R1_001.fastq.gz WT_RD_37_1_S13_R2_001.fastq.gz
