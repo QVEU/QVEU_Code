@@ -1,0 +1,266 @@
+---
+title: "Publication-worthy Sleuth Analysis"
+output: html_notebook
+---
+
+```{r}
+library(ggplot2)
+library(sleuth)
+library(cowplot)
+```
+
+"""
+Import the reference human genome list of transcripts to gene list
+"""
+
+```{r}
+# Import the reference human genome
+mart <- biomaRt::useMart(biomart = 'ENSEMBL_MART_ENSEMBL', dataset = 'hsapiens_gene_ensembl', host = 'ensembl.org')
+
+# Set the reference object to index transcipt ID to the gene ID
+t2g <- biomaRt::getBM(attributes = c("ensembl_transcript_id", "transcript_version", "ensembl_gene_id", "external_gene_name", "description", "transcript_biotype"), mart = mart)
+t2g <- dplyr::rename(t2g, target_id = ensembl_transcript_id, ens_gene = ensembl_gene_id, ext_gene = external_gene_name)
+t2g <- dplyr::select(t2g, c('target_id', 'ens_gene', 'ext_gene'))
+```
+
+"""
+Import the list of all kallisto transcript count .csv file locations,
+as denoted by the folder and sample_table.tsv file
+"""
+
+```{r}
+# Open the folder containing the kallisto results
+sample_id <- dir(file.path('~/Desktop', 'RNAseq', "kallisto"))
+kal_dirs <- sapply(sample_id, function(id) file.path('~/Desktop/RNAseq', "kallisto",id))
+```
+
+```{r}
+# Associate each kallisto output with its associated conditions
+s2c <- read.table(file.path('~/Desktop/RNAseq', "sample_table.tsv"), header = TRUE, stringsAsFactors=FALSE)
+s2c <- dplyr::rename(s2c, sample = Run_s)
+s2c <- dplyr::mutate(s2c, path = kal_dirs)
+s2c
+```
+
+"""
+
+
+```{r}
+# Condition 1, uninfected RD or A549 cells at either 33C or 37C
+RD_A549_Mock <- s2c[s2c$strain=="Mock", ][c("sample","cell", "temperature", "path")]
+
+# Condition 2, RD cells Mock or infected with WT at either 33C or 37C
+RD_WT_or_Mock <- s2c[s2c$cell=="RD" & s2c$strain!="I278V", ][c("sample","strain", "temperature", "path")]
+
+# Condition 3, RD cells with either WT or I278V at 33C or 37C
+RD_WT_or_I278V <- s2c[s2c$cell=="RD" & s2c$strain!="Mock", ][c("sample","strain", "temperature", "path")]
+
+# Condition 4, A549 cells Mock or infected with WT at either 33C or 37C
+A549_WT_or_Mock <- s2c[s2c$cell=="A549" & s2c$strain!="I278V", ][c("sample","strain", "temperature", "path")]
+
+# Condition 5, A549 cells with either WT or I278V at 33C or 37C
+A549_WT_or_I278V <- s2c[s2c$cell=="A549" & s2c$strain!="Mock", ][c("sample","strain", "temperature", "path")]
+```
+
+"""
+Create the sleuth objects from each set of conditions
+"""
+
+```{r}
+# Condition 1
+so_RD_A549_Mock <- sleuth_prep(RD_A549_Mock, target_mapping = t2g, extra_bootstrap_summary = TRUE)
+# Condition 2
+so_RD_WT_or_Mock <- sleuth_prep(RD_WT_or_Mock, target_mapping = t2g, extra_bootstrap_summary = TRUE)
+# Condition 3
+so_RD_WT_or_I278V <- sleuth_prep(RD_WT_or_I278V, target_mapping = t2g, extra_bootstrap_summary = TRUE)
+# Condition 4
+so_A549_WT_or_Mock <- sleuth_prep(A549_WT_or_Mock, target_mapping = t2g, extra_bootstrap_summary = TRUE)
+# Condition 5
+so_A549_WT_or_I278V <- sleuth_prep(A549_WT_or_I278V, target_mapping = t2g, extra_bootstrap_summary = TRUE)
+```
+
+
+
+
+
+"""
+Fit the conditions to either the full model or only individual conditions
+"""
+
+```{r}
+RD_WT_or_Mock$strain
+```
+
+
+```{r}
+# Fit the sleuth object of condition 1 to both parameters or only cell or temperature
+so_RD_A549_Mock <- sleuth_fit(so_RD_A549_Mock, ~temperature + cell, 'full')
+so_RD_A549_Mock <- sleuth_fit(so_RD_A549_Mock, ~temperature, 'reduced_cell')
+so_RD_A549_Mock <- sleuth_fit(so_RD_A549_Mock, ~cell, 'reduced_temperature')
+```
+
+```{r}
+# Fit the sleuth object of condition 2 to both parameters or only strain or temperature
+so_RD_WT_or_Mock <- sleuth_fit(so_RD_WT_or_Mock, ~strain + temperature, 'full')
+so_RD_WT_or_Mock <- sleuth_fit(so_RD_WT_or_Mock, ~temperature, 'reduced_strain')
+so_RD_WT_or_Mock <- sleuth_fit(so_RD_WT_or_Mock, ~strain, 'reduced_temperature')
+```
+
+```{r}
+# Fit the sleuth object of condition 3 to both parameters or only strain or temperature
+so_RD_WT_or_I278V <- sleuth_fit(so_RD_WT_or_I278V, ~temperature + strain, 'full')
+so_RD_WT_or_I278V <- sleuth_fit(so_RD_WT_or_I278V, ~temperature, 'reduced_strain')
+so_RD_WT_or_I278V <- sleuth_fit(so_RD_WT_or_I278V, ~strain, 'reduced_temperature')
+```
+
+```{r}
+# Fit the sleuth object of condition 4 to both parameters or only strain or temperature
+so_A549_WT_or_Mock <- sleuth_fit(so_A549_WT_or_Mock, ~temperature + strain, 'full')
+so_A549_WT_or_Mock <- sleuth_fit(so_A549_WT_or_Mock, ~temperature, 'reduced_strain')
+so_A549_WT_or_Mock <- sleuth_fit(so_A549_WT_or_Mock, ~strain, 'reduced_temperature')
+```
+
+```{r}
+# Fit the sleuth object of condition 5 to both parameters or only strain or temperature
+so_A549_WT_or_I278V <- sleuth_fit(so_A549_WT_or_I278V, ~temperature + strain, 'full')
+so_A549_WT_or_I278V <- sleuth_fit(so_A549_WT_or_I278V, ~temperature, 'reduced_strain')
+so_A549_WT_or_I278V <- sleuth_fit(so_A549_WT_or_I278V, ~strain, 'reduced_temperature')
+```
+
+
+"""
+Perform liklihood ratio test on the five sleuth conditions
+"""
+
+```{r}
+# Perform lrt on condition 1 with either temperature or cell type
+so_RD_A549_Mock <- sleuth_lrt(so_RD_A549_Mock, 'reduced_cell', 'full')
+so_RD_A549_Mock <- sleuth_lrt(so_RD_A549_Mock, 'reduced_temperature', 'full')
+```
+
+```{r}
+# Perform lrt on condition 2 with either temperature or cell type
+so_RD_WT_or_Mock <- sleuth_lrt(so_RD_WT_or_Mock, 'reduced_strain', 'full')
+so_RD_WT_or_Mock <- sleuth_lrt(so_RD_WT_or_Mock, 'reduced_temperature', 'full')
+```
+
+```{r}
+# Perform lrt on condition 3 with either temperature or cell type
+so_RD_WT_or_I278V <- sleuth_lrt(so_RD_WT_or_I278V, 'reduced_strain', 'full')
+so_RD_WT_or_I278V <- sleuth_lrt(so_RD_WT_or_I278V, 'reduced_temperature', 'full')
+```
+
+```{r}
+# Perform lrt on condition 4 with either temperature or cell type
+so_A549_WT_or_Mock <- sleuth_lrt(so_A549_WT_or_Mock, 'reduced_strain', 'full')
+so_A549_WT_or_Mock <- sleuth_lrt(so_A549_WT_or_Mock, 'reduced_temperature', 'full')
+```
+
+```{r}
+# Perform lrt on condition 5 with either temperature or cell type
+so_A549_WT_or_I278V <- sleuth_lrt(so_A549_WT_or_I278V, 'reduced_strain', 'full')
+so_A549_WT_or_I278V <- sleuth_lrt(so_A549_WT_or_I278V, 'reduced_temperature', 'full')
+```
+
+
+"""
+Perform the Wald test on the 5 sleuth condition-dependent objects
+for either of the parameters
+"""
+
+```{r}
+# Perform the Wald test on condition 1 for cell type and temperature
+so_RD_A549_Mock <- sleuth_wt(so_RD_A549_Mock, "cellRD")
+so_RD_A549_Mock <- sleuth_wt(so_RD_A549_Mock, "temperature")
+```
+
+```{r}
+# Perform the Wald test on condition 2 for strain type and temperature
+so_RD_WT_or_Mock <- sleuth_wt(so_RD_WT_or_Mock, "strainWT")
+so_RD_WT_or_Mock <- sleuth_wt(so_RD_WT_or_Mock, "temperature")
+```
+
+```{r}
+# Perform the Wald test on condition 3 for strain type and temperature
+so_RD_WT_or_I278V <- sleuth_wt(so_RD_WT_or_I278V, "strainWT")
+so_RD_WT_or_I278V <- sleuth_wt(so_RD_WT_or_I278V, "temperature")
+```
+
+```{r}
+# Perform the Wald test on condition 4 for strain type and temperature
+so_A549_WT_or_Mock <- sleuth_wt(so_A549_WT_or_Mock, "strainWT")
+so_A549_WT_or_Mock <- sleuth_wt(so_A549_WT_or_Mock, "temperature")
+```
+
+```{r}
+# Perform the Wald test on condition 5 for strain type and temperature
+so_A549_WT_or_I278V <- sleuth_wt(so_A549_WT_or_I278V, "strainWT")
+so_A549_WT_or_I278V <- sleuth_wt(so_A549_WT_or_I278V, "temperature")
+```
+
+
+"""
+Save the sleuth objects for downstream analysis
+"""
+
+
+```{r}
+# Save the sleuth object for both Wald analysis on condition 1
+sleuth_table_gene <- sleuth_results(so_RD_A549_Mock, 'temperature', 'wt', show_all = FALSE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/RD_A549_Mock_temperature.csv")
+
+sleuth_table_gene <- sleuth_results(so_RD_A549_Mock, 'cellRD', 'wt', show_all = FALSE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/RD_A549_Mock_cell.csv")
+```
+
+```{r}
+# Save the sleuth object for both Wald analysis on condition 2
+sleuth_table_gene <- sleuth_results(so_RD_WT_or_Mock, 'temperature', 'wt', show_all = FALSE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/RD_WT_or_Mock_temperature.csv")
+
+sleuth_table_gene <- sleuth_results(so_RD_WT_or_Mock, 'strainWT', 'wt', show_all = FALSE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/RD_WT_or_Mock_strain.csv")
+```
+
+```{r}
+# Save the sleuth object for both Wald analysis on condition 3
+sleuth_table_gene <- sleuth_results(so_RD_WT_or_I278V, 'temperature', 'wt', which_model = 'full', show_all = TRUE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/RD_WT_or_I278V_temperature.csv")
+
+sleuth_table_gene <- sleuth_results(so_RD_WT_or_I278V, 'strainWT', 'wt', show_all = TRUE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/RD_WT_or_I278V_strain.csv")
+```
+
+```{r}
+# Save the sleuth object for both Wald analysis on condition 4
+sleuth_table_gene <- sleuth_results(so_A549_WT_or_Mock, 'temperature', 'wt', show_all = FALSE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/so_A549_WT_or_Mock_temperature.csv")
+
+sleuth_table_gene <- sleuth_results(so_A549_WT_or_Mock, 'strainWT', 'wt', show_all = FALSE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/so_A549_WT_or_Mock_strain.csv")
+```
+
+```{r}
+# Save the sleuth object for both Wald analysis on condition 5
+sleuth_table_gene <- sleuth_results(so_A549_WT_or_I278V, 'temperature', 'wt', show_all = FALSE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/A549_WT_or_I278V_temperature.csv")
+
+sleuth_table_gene <- sleuth_results(so_A549_WT_or_I278V, 'strainWT', 'wt', show_all = FALSE, pval_aggregate = F)
+write.csv(sleuth_table_gene, "~/Desktop/RNAseq/A549_WT_or_I278V_strain.csv")
+```
+
+
+"""
+Visualize the sleuth objects
+"""
+
+```{r}
+# Condition 1: so_RD_A549_Mock
+# Condition 2: so_RD_WT_or_Mock
+# Condition 3: so_RD_WT_or_I278V
+# Condition 4: so_A549_WT_or_Mock
+# Condition 5: so_A549_WT_or_I278V
+sleuth_live(so_RD_WT_or_I278V)
+```
+
+
