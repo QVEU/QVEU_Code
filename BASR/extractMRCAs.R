@@ -1,6 +1,6 @@
 #extractMRCAs.R
 #Script to extract mrca table information from BASR csv. 
-#Usage: extractMRCAs.R <BASRcsv.csv>
+#Usage: Rscript extractMRCAs.R <BASRcsv.csv>
 #
 
 library(data.table)
