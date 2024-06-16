@@ -41,8 +41,6 @@ You will need to request access to skyline by going to: [Skyline](skyline.niaid.
 ## 2. Work interactively in _skyline_ with `salloc`
 TO DO
 
-- this is a good way to develop scripts that you can eventually turn into `qsubmit` job files.
-
 ## 3. Transferring files to the cluster with `rsync`
 ### - To transfer a ___file___:
 ``` bash
@@ -62,10 +60,9 @@ TO DO
 ```
 
 
-## 4. Submit Jobs in _locus_ with `qsubmit`
-___[under construction]___
+## 4. Submit Jobs in _locus_ with `sbatch`
 ```
-qsubmit jobfile [arguments]
+TO DO
 ```
 
 ## 5. Working with ___modules___
