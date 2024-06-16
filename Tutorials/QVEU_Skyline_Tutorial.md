@@ -1,7 +1,6 @@
 # QVEU Skyline Users Guide
 ----------------------------------
-_Patrick T. Dolan, Ph.D._
-_Quantitative Virology and Evolution Unit_
+Quantitative Virology and Evolution Unit
 ----------------------------------
 
 
