@@ -39,19 +39,16 @@ You will need to request access to skyline by going to: [Skyline](skyline.niaid.
 ```
 
 ## 2. Work interactively in _skyline_ with `salloc`
-`
-- `salloc` allocates memory for a job.
-``` bash
-> salloc 
-```
-change the memory requirements, `h_vmem`, as needed. 
+TO DO
 
 - this is a good way to develop scripts that you can eventually turn into `qsubmit` job files.
 
 ## 3. Transferring files to the cluster with `rsync`
 ### - To transfer a ___file___:
 ``` bash
-> rsync -avp ~/path/to/local/file username@ai-submit1.niaid.nih.gov:~/path/to/destination/
+> rsync -avp ~/path/to/local/directory username@ai-hpcsubmit1.niaid.nih.gov:~/path/to/destination/dir/
+> rsync -avp ~/path/to/local/files/ username@ai-hpcsubmit1.niaid.nih.gov:~/path/to/destination/dir/
+> rsync -avp ~/path/to/local/file.ext username@ai-hpcsubmit1.niaid.nih.gov:~/path/to/destination/dir/
 ```
 
 ### - To transfer a ___directory___. __Note__: Do not include terminal `/` or you will transfer the _contents_ of the directory into the destination directory.
